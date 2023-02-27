@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Joi from "joi-browser";
 import Input from "./input";
 import Select from "./select";
+import { Link } from "react-router-dom";
 
 class Form extends Component {
   state = {
@@ -49,7 +50,6 @@ class Form extends Component {
   };
 
   renderButton(label) {
-    console.log("Jueputa", this.validate());
     return (
       <button disabled={this.validate()} className="btn btn-primary">
         {label}
@@ -69,6 +69,32 @@ class Form extends Component {
         onChange={this.handleChange}
         error={errors[name]}
       />
+    );
+  }
+
+  renderReadOnlyLinkComponent(text_before, text_link, link) {
+    if (!text_link) return null;
+    return (
+      <h3>
+        {text_before} <Link to={link}>{text_link}</Link>
+      </h3>
+    );
+  }
+
+  renderURLReadOnlyList(list_title, items, display_parameter, url_prefix) {
+    return (
+      <div>
+        <h4>{list_title}</h4>
+        <ul>
+          {items.map((item) => (
+            <li key={item["id"]}>
+              <Link to={`/${url_prefix}/${item["id"]}`}>
+                {item[display_parameter]}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
 

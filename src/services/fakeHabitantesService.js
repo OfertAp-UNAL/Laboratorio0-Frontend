@@ -16,7 +16,7 @@ const habitantes = [
     houses: [
       {
         id: 1,
-        direccion: "Calle 1 # 2 - 3",
+        address: "Calle 1 # 2 - 3",
       },
     ],
     depends_on: {

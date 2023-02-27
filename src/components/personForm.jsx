@@ -1,6 +1,5 @@
 import React from "react";
 import Joi from "joi-browser";
-import { Link } from "react-router-dom";
 import Form from "./common/form";
 import { getHabitante, saveHabitante } from "../services/fakeHabitantesService";
 
@@ -38,17 +37,12 @@ class PersonForm extends Form {
       if (personId === "new") return;
       const person = getHabitante(personId);
 
-      const governor_from = person.governor_from || "";
-
-      const houses = person.houses || "";
-
       this.setState({
         data: this.mapToViewModel(person),
-        // governor_from,
-        // houses,
+        governor_from: person.governor_from,
+        houses: person.houses,
       });
     } catch (ex) {
-      console.log("Mierda");
       if (ex.response && ex.response.status === 404)
         this.props.history.replace("/not-found");
     }
@@ -59,7 +53,6 @@ class PersonForm extends Form {
   }
 
   mapToViewModel(person) {
-    console.log("At least!");
     return {
       id: person.id,
       name: person.name,
@@ -78,31 +71,25 @@ class PersonForm extends Form {
 
   render() {
     const { houses } = this.state;
-    const { name: town_name, id: town_id } = this.state.governor_from;
+    const { name: nombre_persona } = this.state.data;
+    const { name: town_name } = this.state.governor_from;
     return (
       <div>
-        <h1>Habitante Form</h1>
-
+        <h1>Datos de {nombre_persona}</h1>
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("name", "Nombre")}
           {this.renderInput("phone", "Teléfono", "number")}
           {this.renderInput("age", "Edad", "number")}
           {this.renderInput("gender", "Sexo")}
-          {town_name && (
-            <h3>Gobernador de {<Link to={""}>{town_name}</Link>}</h3>
-          )}
+          {this.renderReadOnlyLinkComponent("Gobernador de", town_name, "/")}
           {this.renderInput("home_address", "Dirección")}
-
-          <h4>Propiedades</h4>
-          <ul>
-            {houses.map((house) => (
-              <li key={house["direccion"]}>
-                {<Link to={"/"}>{house["direccion"]}</Link>}
-              </li>
-            ))}
-          </ul>
-
-          {this.renderInput("depends_on_id", "Depende_de")}
+          {this.renderURLReadOnlyList(
+            "Viviendas",
+            houses,
+            "address",
+            "viviendas/"
+          )}
+          {this.renderInput("depends_on_id", "Depende_de (cédula)")}
           {this.renderButton("Save")}
         </form>
       </div>
