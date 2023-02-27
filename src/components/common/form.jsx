@@ -82,6 +82,12 @@ class Form extends Component {
   }
 
   renderURLReadOnlyList(list_title, items, display_parameter, url_prefix) {
+    /*
+      list_title: string to be displayed as title of the list
+      items: array of objects to be displayed in the list
+      display_parameter: string with the name of the parameter to search in the items list
+      url_prefix: URL prefix to be used in the links
+    */
     return (
       <div>
         <h4>{list_title}</h4>

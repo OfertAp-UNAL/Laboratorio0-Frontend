@@ -18,6 +18,7 @@ class PersonForm extends Form {
     houses: [],
   };
 
+  // Front-end validation schema
   schema = {
     id: Joi.number(),
     name: Joi.string().required().label("Nombre"),
@@ -32,6 +33,10 @@ class PersonForm extends Form {
   };
 
   populatePerson() {
+    /*
+      If the person is new, we don't need to populate the form.
+      If the person is not new, we need to populate the form with the data from the server, reading the id from the URL.
+    */
     try {
       const personId = this.props.match.params.id;
       if (personId === "new") return;
@@ -52,6 +57,7 @@ class PersonForm extends Form {
     this.populatePerson();
   }
 
+  // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
   mapToViewModel(person) {
     return {
       id: person.id,
