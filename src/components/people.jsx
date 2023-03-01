@@ -5,10 +5,7 @@ import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import _ from "lodash";
 import SearchBox from "./searchBox";
-import {
-  getHabitantes,
-  deleteHabitante,
-} from "../services/fakeHabitantesService";
+import { getPeople } from "../services/peopleService";
 
 class People extends Component {
   state = {
@@ -19,14 +16,15 @@ class People extends Component {
     sortColumn: { path: "name", order: "asc" },
   };
 
-  componentDidMount() {
-    this.setState({ people: getHabitantes() });
+  async componentDidMount() {
+    const { data: people } = await getPeople();
+    this.setState({ people });
   }
 
   handleDelete = (person) => {
     const people = this.state.people.filter((p) => p.id !== person.id);
     this.setState({ people });
-    deleteHabitante(person.id);
+    // deleteHabitante(person.id);
   };
 
   handlePageChange = (page) => {

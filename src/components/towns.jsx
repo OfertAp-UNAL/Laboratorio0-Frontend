@@ -11,24 +11,21 @@
 //   deleteHabitante,
 // } from "../services/fakeHabitantesService";
 
-// class Municipios extends Component {
+// class Towns extends Component {
 //   state = {
-//     municipios: [],
+//     towns: [],
 //     currentPage: 1,
 //     pageSize: 4,
 //     searchQuery: "",
-//     sortColumn: { path: "nombre", order: "asc" },
+//     sortColumn: { path: "name", order: "asc" },
 //   };
 
 //   async componentDidMount() {
-//     // const { data: habitantes } = getHabitantes();
-//     this.setState({ habitantes: getHabitantes() });
+//     this.setState({ towns: getHabitantes() });
 //   }
 
 //   handleDelete = (habitante) => {
-//     const habitantes = this.state.municipios.filter(
-//       (h) => h._id !== habitante._id
-//     );
+//     const habitantes = this.state.towns.filter((h) => h._id !== habitante._id);
 //     this.setState({ habitantes });
 
 //     deleteHabitante(habitante._id);
@@ -52,7 +49,7 @@
 //       currentPage,
 //       sortColumn,
 //       searchQuery,
-//       municipios: allHabitants,
+//       towns: allHabitants,
 //     } = this.state;
 
 //     let filtered = allHabitants;
@@ -69,7 +66,7 @@
 //   };
 
 //   render() {
-//     const { length: count } = this.state.municipios;
+//     const { length: count } = this.state.towns;
 //     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
 //     if (count === 0) return <p>No hay habitantes en la base de datos.</p>;
@@ -81,11 +78,11 @@
 //         <div className="col-3"></div>
 //         <div className="col">
 //           <Link
-//             to="/habitantes/new"
+//             to="/municipios/new"
 //             className="btn btn-primary"
 //             style={{ marginBottom: 20 }}
 //           >
-//             Agregar Habitante
+//             Agregar Municipio
 //           </Link>
 //           <SearchBox value={searchQuery} onChange={this.handleSearch} />
 //           <HabitantesTable
@@ -106,4 +103,4 @@
 //   }
 // }
 
-// export default Municipios;
+// export default Towns;

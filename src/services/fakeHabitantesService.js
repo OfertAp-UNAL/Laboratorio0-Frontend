@@ -40,7 +40,8 @@ export function saveHabitante(person) {
   personInDb.phone = person.phone;
   personInDb.age = person.age;
   personInDb.gender = person.gender;
-  personInDb.governor = habitantes.find((p) => p.name === person.name) || {};
+  personInDb.governor_from =
+    habitantes.find((p) => p.name === person.name) || {};
 
   if (!personInDb.id) {
     personInDb.id = parseInt(Date.now().toString());

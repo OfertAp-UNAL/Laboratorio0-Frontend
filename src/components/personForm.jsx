@@ -1,38 +1,48 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
-import { getHabitante, saveHabitante } from "../services/fakeHabitantesService";
+import { getPerson, savePerson } from "../services/peopleService";
 
 class PersonForm extends Form {
   state = {
     data: {
+      id: "",
       name: "",
       phone: "",
       age: "",
       gender: "",
-      home_address: "",
+      governor_from: "",
+      home_town: "IDK",
+      home_id: "",
+      houses: [],
       depends_on_id: "",
     },
     errors: {},
-    governor_from: "",
-    houses: [],
   };
 
-  // Front-end validation schema
+  // Front-end validation schema. governor_from is not validated because it is a read-only field.
+
+  houseSchema = Joi.object({
+    id: Joi.number().required().label("ID de Casa"),
+    name: Joi.string().required().label("Nombre de Casa"),
+  });
+
   schema = {
-    id: Joi.number(),
+    id: Joi.number().required().label("Cédula"),
     name: Joi.string().required().label("Nombre"),
     phone: Joi.string().required().label("Teléfono"),
     age: Joi.number().required().min(0).max(100).label("Edad"),
     gender: Joi.string().required().label("Sexo"),
-    home_address: Joi.string().allow("").allow(null).label("Hogar"),
+    home_town: Joi.string().allow("").allow(null).label("Municipio"),
+    home_id: Joi.number().allow("").allow(null).label("Hogar"),
+    houses: Joi.array().items(this.houseSchema).label("Viviendas"),
     depends_on_id: Joi.number()
       .allow("")
       .allow(null)
       .label("Cédula Cabeza de Familia"),
   };
 
-  populatePerson() {
+  async populatePerson() {
     /*
       If the person is new, we don't need to populate the form.
       If the person is not new, we need to populate the form with the data from the server, reading the id from the URL.
@@ -40,12 +50,9 @@ class PersonForm extends Form {
     try {
       const personId = this.props.match.params.id;
       if (personId === "new") return;
-      const person = getHabitante(personId);
-
+      const { data: person } = await getPerson(personId);
       this.setState({
         data: this.mapToViewModel(person),
-        governor_from: person.governor_from,
-        houses: person.houses,
       });
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
@@ -53,8 +60,8 @@ class PersonForm extends Form {
     }
   }
 
-  componentDidMount() {
-    this.populatePerson();
+  async componentDidMount() {
+    await this.populatePerson();
   }
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
@@ -65,30 +72,31 @@ class PersonForm extends Form {
       phone: person.phone,
       age: person.age,
       gender: person.gender,
-      home_address: person.home ? person.home.address : "",
-      depends_on_id: person.depends_on ? person.depends_on.id : "",
+      home_id: person.home || "",
+      houses: person.houses,
+      depends_on_id: person.depends_on !== null ? person.depends_on : "",
     };
   }
 
   doSubmit = () => {
-    saveHabitante(this.state.data);
-    this.props.history.push("/habitantes");
+    savePerson(this.state.data);
+    this.props.history.push("/personas/");
   };
 
   render() {
-    const { houses } = this.state;
-    const { name: nombre_persona } = this.state.data;
-    const { name: town_name } = this.state.governor_from;
+    const { name: nombre_persona, houses } = this.state.data;
+    console.log(this.state.data);
     return (
       <div>
         <h1>Datos de {nombre_persona}</h1>
         <form onSubmit={this.handleSubmit}>
+          {this.renderInput("id", "Cédula", "number")}
           {this.renderInput("name", "Nombre")}
           {this.renderInput("phone", "Teléfono", "number")}
           {this.renderInput("age", "Edad", "number")}
           {this.renderInput("gender", "Sexo")}
-          {this.renderReadOnlyLinkComponent("Gobernador de", town_name, "/")}
-          {this.renderInput("home_address", "Dirección")}
+          {this.renderReadOnlyLinkComponent("Gobernador de", "IDK", "/")}
+          {this.renderInput("home_id", "Dirección")}
           {this.renderURLReadOnlyList(
             "Viviendas",
             houses,
