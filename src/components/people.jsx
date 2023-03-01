@@ -48,10 +48,12 @@ class People extends Component {
       people: allHabitants,
     } = this.state;
 
+    console.log(allHabitants);
+
     let filtered = allHabitants;
     if (searchQuery)
       filtered = allHabitants.filter((p) =>
-        p.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+        p.id.toString().startsWith(searchQuery.toLowerCase())
       );
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
@@ -62,7 +64,6 @@ class People extends Component {
   };
 
   render() {
-    const { length: count } = this.state.people;
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
     // if (count === 0) return <p>No hay habitantes en la base de datos.</p>;

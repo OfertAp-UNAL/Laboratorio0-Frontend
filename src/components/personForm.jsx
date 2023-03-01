@@ -93,13 +93,12 @@ class PersonForm extends Form {
           {this.renderInput("phone", "Teléfono")}
           {this.renderInput("age", "Edad", "number")}
           {this.renderInput("gender", "Sexo")}
-          {this.renderReadOnlyLinkComponent("Gobernador de", "IDK", "/")}
           {this.renderInput("home_id", "Dirección")}
           {this.renderURLReadOnlyList(
             "Viviendas",
             houses,
             "address",
-            "viviendas/"
+            "viviendas"
           )}
           {this.renderInput("depends_on_id", "Depende_de (cédula)")}
           {this.renderButton("Save")}
