@@ -1,7 +1,9 @@
 import React from "react";
 import Joi from "joi-browser";
+import { useParams, useNavigate } from "react-router-dom";
 import Form from "./common/form";
 import { getPerson, savePerson } from "../services/peopleService";
+import withRouter from "../services/withRouter";
 
 class PersonForm extends Form {
   state = {
@@ -22,11 +24,6 @@ class PersonForm extends Form {
 
   // Front-end validation schema. governor_from is not validated because it is a read-only field.
 
-  houseSchema = Joi.object({
-    id: Joi.number().required().label("ID de Casa"),
-    name: Joi.string().required().label("Nombre de Casa"),
-  });
-
   schema = {
     id: Joi.number().required().label("Cédula"),
     name: Joi.string().required().label("Nombre"),
@@ -35,7 +32,9 @@ class PersonForm extends Form {
     gender: Joi.string().required().label("Sexo"),
     home_town: Joi.string().allow("").allow(null).label("Municipio"),
     home_id: Joi.number().allow("").allow(null).label("Hogar"),
-    houses: Joi.array().items(this.houseSchema).label("Viviendas"),
+    houses: Joi.any(),
+    governor_from: Joi.any(),
+
     depends_on_id: Joi.number()
       .allow("")
       .allow(null)
@@ -48,7 +47,7 @@ class PersonForm extends Form {
       If the person is not new, we need to populate the form with the data from the server, reading the id from the URL.
     */
     try {
-      const personId = this.props.match.params.id;
+      const personId = this.props.params.id;
       if (personId === "new") return;
       const { data: person } = await getPerson(personId);
       this.setState({
@@ -80,19 +79,18 @@ class PersonForm extends Form {
 
   doSubmit = () => {
     savePerson(this.state.data);
-    this.props.history.push("/personas/");
   };
 
   render() {
+    console.log("Props:", this.props);
     const { name: nombre_persona, houses } = this.state.data;
-    console.log(this.state.data);
     return (
       <div>
         <h1>Datos de {nombre_persona}</h1>
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("id", "Cédula", "number")}
           {this.renderInput("name", "Nombre")}
-          {this.renderInput("phone", "Teléfono", "number")}
+          {this.renderInput("phone", "Teléfono")}
           {this.renderInput("age", "Edad", "number")}
           {this.renderInput("gender", "Sexo")}
           {this.renderReadOnlyLinkComponent("Gobernador de", "IDK", "/")}
@@ -111,4 +109,4 @@ class PersonForm extends Form {
   }
 }
 
-export default PersonForm;
+export default withRouter(PersonForm);

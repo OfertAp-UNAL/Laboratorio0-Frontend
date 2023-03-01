@@ -20,11 +20,11 @@ export function getPerson(personId) {
 }
 
 export function savePerson(person) {
-  if (person.id) {
-    const body = { ...person };
-    delete body.id;
-    return http.put(personUrl(person.id), body);
-  }
+  // if (person.id) {
+  //   const body = { ...person };
+  //   delete body.id;
+  //   return http.put(personUrl(person.id), body);
+  // }
   return http.post(apiEndpoint, person);
 }
 
