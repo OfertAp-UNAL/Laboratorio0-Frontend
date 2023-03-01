@@ -1,9 +1,9 @@
 import React from "react";
 import Joi from "joi-browser";
 import { useParams, useNavigate } from "react-router-dom";
-import Form from "./common/form";
-import { getPerson, savePerson } from "../services/peopleService";
-import withRouter from "../services/withRouter";
+import Form from "../common/form";
+import { getPerson, savePerson } from "../../services/peopleService";
+import withRouter from "../../services/withRouter";
 
 class PersonForm extends Form {
   state = {

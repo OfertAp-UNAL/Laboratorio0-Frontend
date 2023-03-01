@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Pagination from "./common/pagination";
-import { paginate } from "../utils/paginate";
+import Pagination from "../common/pagination";
+import { paginate } from "../../utils/paginate";
 import _ from "lodash";
-import SearchBox from "./searchBox";
+import SearchBox from "../searchBox";
 import TownsTable from "./townsTable";
 import {
   getTown,
   getTowns,
   saveTown,
   deleteTown,
-} from "../services/townService";
+} from "../../services/townService";
 
 class Towns extends Component {
   state = {
