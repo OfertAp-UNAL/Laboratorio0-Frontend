@@ -66,8 +66,6 @@ class People extends Component {
   render() {
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
-    // if (count === 0) return <p>No hay habitantes en la base de datos.</p>;
-
     const { totalCount, data: people } = this.getPagedData();
 
     return (
