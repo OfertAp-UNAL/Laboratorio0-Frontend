@@ -3,7 +3,6 @@ import Joi from "joi-browser";
 import Form from "../common/form";
 import { getPerson, savePerson } from "../../services/peopleService";
 import withRouter from "../../services/withRouter";
-import SelectHouseModal from "./selectHouseModal";
 
 class PersonForm extends Form {
   state = {
@@ -20,7 +19,6 @@ class PersonForm extends Form {
       depends_on_id: "",
     },
     errors: {},
-    showModal: false,
   };
 
   // Front-end validation schema. governor_from is not validated because it is a read-only field.
@@ -82,24 +80,8 @@ class PersonForm extends Form {
     savePerson(this.state.data);
   };
 
-  handleModalToggle = () => {
-    this.setState({ showModal: !this.state.showModal });
-  };
-
-  handleModalSelect = (house) => {
-    /*
-      Receive a house with only id and name fields!
-    */
-    this.setState({
-      data: {
-        ...this.state.data,
-        houses: [...this.state.data.houses, house],
-      },
-    });
-    this.handleModalToggle();
-  };
-
   render() {
+    console.log("Props:", this.props);
     const { name: nombre_persona, houses } = this.state.data;
     return (
       <div>
@@ -117,12 +99,7 @@ class PersonForm extends Form {
             "address",
             "viviendas"
           )}
-          <SelectHouseModal
-            showModal={this.state.showModal}
-            handleModalToggle={this.handleModalToggle}
-          />
           {this.renderInput("depends_on_id", "Depende_de (cédula)")}
-
           {this.renderButton("Save")}
         </form>
       </div>

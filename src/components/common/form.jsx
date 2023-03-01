@@ -50,7 +50,6 @@ class Form extends Component {
   };
 
   renderButton(label) {
-    console.log(this.validate());
     return (
       <button disabled={this.validate()} className="btn btn-primary">
         {label}
@@ -89,6 +88,7 @@ class Form extends Component {
       display_parameter: string with the name of the parameter to search in the items list
       url_prefix: URL prefix to be used in the links
     */
+    if (!items) return null;
     return (
       <div>
         <h4>{list_title}</h4>

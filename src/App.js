@@ -8,6 +8,7 @@ import Towns from "./components/Towns/towns";
 import NotFound from "./components/common/notFound";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import TownForm from "./components/Towns/townForm";
 
 class App extends Component {
   state = {};
@@ -20,6 +21,7 @@ class App extends Component {
         <main className="container">
           <Routes>
             <Route path="/habitantes/:id" element={<PersonForm />} />
+            <Route path="/municipios/:id" element={<TownForm />} />
             <Route path="/habitantes" element={<People />} />
             <Route path="/municipios" element={<Towns />} />
             <Route path="/not-found" element={<NotFound />} />
