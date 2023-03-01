@@ -10,7 +10,6 @@ function personUrl(id) {
 
 // localhost:8000/api/v1/personas/
 export function getPeople() {
-  console.log("getPeople() called with " + apiEndpoint);
   return http.get(apiEndpoint);
 }
 
