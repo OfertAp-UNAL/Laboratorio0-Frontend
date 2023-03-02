@@ -102,6 +102,7 @@ class PersonForm extends Form {
     houses_ids.push(house.id)
     console.log("houses_ids is ", houses_ids);
     await addPersonHouse(this.state.data, houses_ids)
+    await this.populatePerson(); // Re render component after deletion
   }
 
   render() {
@@ -109,7 +110,7 @@ class PersonForm extends Form {
     return (
       <div>
         <h1>Datos de {nombre_persona}</h1>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit}>r
           {this.renderInput("id", "Cédula", "number")}
           {this.renderInput("name", "Nombre")}
           {this.renderInput("phone", "Teléfono")}
