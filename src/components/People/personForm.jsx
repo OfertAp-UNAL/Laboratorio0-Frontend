@@ -1,9 +1,10 @@
 import React from "react";
 import Joi from "joi-browser";
+import withRouter from "../../services/withRouter";
+import SelectHouseModal from "./ModalSelect";
 import Form from "../common/form";
 import { getPerson, savePerson, addPersonHouse } from "../../services/peopleService";
-import withRouter from "../../services/withRouter";
-import SelectHouseModal from "./selectHouseModal";
+import { getHouses } from "../../services/housesService";
 
 class PersonForm extends Form {
   state = {
@@ -20,6 +21,7 @@ class PersonForm extends Form {
     },
     errors: {},
     showModal: false,
+    allHouses: null
   };
 
   // Front-end validation schema. governor_from is not validated because it is a read-only field.
@@ -57,11 +59,12 @@ class PersonForm extends Form {
 
   async componentDidMount() {
     await this.populatePerson();
+    const {data: allHouses} = await getHouses();
+    this.setState({allHouses});
   }
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
   mapToViewModel(person) {
-    console.log("The damn person is", person);
     return {
       id: person.id,
       name: person.name,
@@ -97,10 +100,8 @@ class PersonForm extends Form {
 
   addHouse = async house => {
     const {houses} = this.state.data
-    console.log("The house you wanna add is", house);
     let houses_ids = houses.map(house => house.id)
     houses_ids.push(house.id)
-    console.log("houses_ids is ", houses_ids);
     await addPersonHouse(this.state.data, houses_ids)
     await this.populatePerson(); // Re render component after deletion
   }
@@ -123,11 +124,14 @@ class PersonForm extends Form {
             "address",
             "viviendas"
           )}
-          {houses && (
+          {this.state.allHouses && <h5>Loaded</h5>}
+          {this.state.allHouses && (
             <SelectHouseModal
+              options = {this.state.allHouses}
               showModal={this.state.showModal}
               handleModalToggle={this.handleModalToggle}
               onSelect = {this.addHouse}
+              nameField = "address"
             />
           )}
           {this.renderInput("depends_on_id", "Depende_de (cédula)")}

@@ -1,56 +1,54 @@
 import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
-import { getHouses } from "../../services/housesService";
 
 
-class SelectHouseModal extends Component {
+
+class ModalSelect extends Component {
   state = {
     baseOptions: [],
     filteredOptions: [],
     searchQuery: "",
     selectedOption: "",
+    nameField: ""
   }
 
+
   async componentDidMount() {
-    this.setState({searchQuery: "", filteredOptions: [], selectedOption: ""})
-    console.log("Houses loading...");
-    const {data: houses} = await getHouses()
-    console.log("Houses loaded...")
-    this.setState({baseOptions: houses})
+    const nameField = this.props.nameField || "name";
+    this.setState({searchQuery: "", filteredOptions: [], selectedOption: "", baseOptions: this.props.options, nameField})
   }
 
   updateFilteredOptions = () => {
-    const {baseOptions, searchQuery} = this.state
-    const filteredOptions = baseOptions.filter( option => option.address.toLowerCase().includes(searchQuery.toLowerCase().trim()))
+    const {baseOptions, searchQuery, nameField} = this.state
+    const filteredOptions = baseOptions.filter( option => option[nameField].toLowerCase().includes(searchQuery.toLowerCase().trim()))
     this.setState({filteredOptions})
   }
 
   handleSuggestionClick = option => {
+    const {nameField} = this.props
     const id = option.id
-    const address = option.address
-    const selectedOption = {"id": id, "address": address}
-    this.setState({searchQuery: address, selectedOption})
+    const name = option[nameField]
+    const selectedOption = {"id": id, nameField: name}
+    this.setState({searchQuery: name, selectedOption})
     this.updateFilteredOptions()
   }
 
   handleChange = event => {
-    const address = event.target.value || ""
-    this.setState({searchQuery: address})
+    const name = event.target.value || ""
+    this.setState({searchQuery: name})
     this.updateFilteredOptions()
   }
 
   sendForm = () => {
-    console.log("Will call this with", this.state.selectedOption);
     this.props.onSelect(this.state.selectedOption)
     this.props.handleModalToggle(this.state.selectedOption)
   }
 
   render() {
-    const {searchQuery, filteredOptions} = this.state
-    console.log(this.state.baseOptions)
+    const {searchQuery, filteredOptions, nameField} = this.state
     return(
       <div>
-        <Button onClick={this.props.handleModalToggle}>Add House</Button>
+        <Button onClick={this.props.handleModalToggle}>Add</Button>
         <Modal
           show={this.props.showModal}
           onHide={this.props.handleModalToggle}
@@ -67,7 +65,7 @@ class SelectHouseModal extends Component {
                     key={option.id}
                     onClick={() => this.handleSuggestionClick(option)}
                   >
-                    {option.address}
+                    {option[nameField]}
                   </li>
                 ))}
               </ul>
@@ -83,4 +81,4 @@ class SelectHouseModal extends Component {
 
 }
 
-export default SelectHouseModal;
+export default ModalSelect;

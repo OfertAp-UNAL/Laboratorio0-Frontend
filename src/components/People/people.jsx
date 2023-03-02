@@ -5,7 +5,7 @@ import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import _ from "lodash";
 import SearchBox from "../searchBox";
-import { getPeople } from "../../services/peopleService";
+import { getPeople, deletePerson } from "../../services/peopleService";
 
 class People extends Component {
   state = {
@@ -21,10 +21,10 @@ class People extends Component {
     this.setState({ people });
   }
 
-  handleDelete = (person) => {
-    const people = this.state.people.filter((p) => p.id !== person.id);
-    this.setState({ people });
-    // deleteHabitante(person.id);
+  handleDelete = async (person) => {
+    await deletePerson(person.id)  // Remove in the database
+    const people = people.filter(p => p.id !== person.id)
+    this.setState({people})
   };
 
   handlePageChange = (page) => {
@@ -48,7 +48,6 @@ class People extends Component {
       people: allHabitants,
     } = this.state;
 
-    console.log(allHabitants);
 
     let filtered = allHabitants;
     if (searchQuery)

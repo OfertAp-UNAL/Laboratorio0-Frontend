@@ -33,6 +33,6 @@ export function addPersonHouse(person, houses) {
   return http.patch(personUrl(person.id), body)
 }
 
-export function deleteHabitante(personId) {
+export function deletePerson(personId) {
   return http.delete(personUrl(personId));
 }
