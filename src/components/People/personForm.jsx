@@ -61,16 +61,16 @@ class PersonForm extends Form {
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
   mapToViewModel(person) {
+    console.log("The damn person is", person);
     return {
       id: person.id,
       name: person.name,
       phone: person.phone,
       age: person.age,
       gender: person.gender,
-      governor_from: person.depends_on !== null ? person.depends_on : "",
-      home: person.home || "",
+      depends_on_id: person.depends_on !== null ? person.depends_on.id : "",
+      home: person.home.address || "",
       houses: person.houses,
-      depends_on: person.home || "",
     };
   }
 
@@ -116,7 +116,7 @@ class PersonForm extends Form {
           {this.renderInput("phone", "Teléfono")}
           {this.renderInput("age", "Edad", "number")}
           {this.renderInput("gender", "Sexo")}
-          {this.renderInput("home_id", "Dirección")}
+          {this.renderInput("home", "Dirección")}
           {this.renderURLReadOnlyList(
             "Viviendas",
             houses,
