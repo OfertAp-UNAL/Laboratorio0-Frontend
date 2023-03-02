@@ -5,7 +5,7 @@ const apiUrl = config.apiUrl;
 const apiEndpoint = apiUrl + "/personas/";
 
 function personUrl(id) {
-  return `${apiEndpoint}${id}`;
+  return `${apiEndpoint}${id}/`;
 }
 
 // localhost:8000/api/v1/personas/
@@ -25,6 +25,12 @@ export function savePerson(person) {
   //   return http.put(personUrl(person.id), body);
   // }
   return http.post(apiEndpoint, person);
+}
+
+export function addPersonHouse(person, houses) {
+  const body = {"houses": houses}
+  console.log("The body here is", body);
+  return http.patch(personUrl(person.id), body)
 }
 
 export function deleteHabitante(personId) {

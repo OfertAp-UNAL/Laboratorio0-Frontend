@@ -1,7 +1,7 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "../common/form";
-import { getPerson, savePerson } from "../../services/peopleService";
+import { getPerson, savePerson, addPersonHouse } from "../../services/peopleService";
 import withRouter from "../../services/withRouter";
 import SelectHouseModal from "./selectHouseModal";
 
@@ -14,10 +14,9 @@ class PersonForm extends Form {
       age: "",
       gender: "",
       governor_from: "",
-      home_town: "IDK",
-      home_id: "",
-      houses: [],
-      depends_on_id: "",
+      home: "",
+      houses: "",
+      depends_on: "",
     },
     errors: {},
     showModal: false,
@@ -31,15 +30,11 @@ class PersonForm extends Form {
     phone: Joi.string().required().label("Teléfono"),
     age: Joi.number().required().min(0).max(100).label("Edad"),
     gender: Joi.string().required().label("Sexo"),
-    home_town: Joi.string().allow("").allow(null).label("Municipio"),
+    governor_from: Joi.any(),
+    home: Joi.any(),
     home_id: Joi.number().allow("").allow(null).label("Hogar"),
     houses: Joi.any(),
-    governor_from: Joi.any(),
-
-    depends_on_id: Joi.number()
-      .allow("")
-      .allow(null)
-      .label("Cédula Cabeza de Familia"),
+    depends_on: Joi.any(),
   };
 
   async populatePerson() {
@@ -72,9 +67,10 @@ class PersonForm extends Form {
       phone: person.phone,
       age: person.age,
       gender: person.gender,
-      home_id: person.home || "",
+      governor_from: person.depends_on !== null ? person.depends_on : "",
+      home: person.home || "",
       houses: person.houses,
-      depends_on_id: person.depends_on !== null ? person.depends_on : "",
+      depends_on: person.home || "",
     };
   }
 
@@ -99,6 +95,15 @@ class PersonForm extends Form {
     this.handleModalToggle();
   };
 
+  addHouse = async house => {
+    const {houses} = this.state.data
+    console.log("The house you wanna add is", house);
+    let houses_ids = houses.map(house => house.id)
+    houses_ids.push(house.id)
+    console.log("houses_ids is ", houses_ids);
+    await addPersonHouse(this.state.data, houses_ids)
+  }
+
   render() {
     const { name: nombre_persona, houses } = this.state.data;
     return (
@@ -117,10 +122,13 @@ class PersonForm extends Form {
             "address",
             "viviendas"
           )}
-          <SelectHouseModal
-            showModal={this.state.showModal}
-            handleModalToggle={this.handleModalToggle}
-          />
+          {houses && (
+            <SelectHouseModal
+              showModal={this.state.showModal}
+              handleModalToggle={this.handleModalToggle}
+              onSelect = {this.addHouse}
+            />
+          )}
           {this.renderInput("depends_on_id", "Depende_de (cédula)")}
 
           {this.renderButton("Save")}
