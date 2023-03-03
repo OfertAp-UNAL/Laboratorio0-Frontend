@@ -18,13 +18,13 @@ export function getPerson(personId) {
   return http.get(personUrl(personId));
 }
 
-export function savePerson(person) {
-  // if (person.id) {
-  //   const body = { ...person };
-  //   delete body.id;
-  //   return http.put(personUrl(person.id), body);
-  // }
-  return http.post(apiEndpoint, person);
+
+export function createPerson(person) {
+  return http.post(apiEndpoint, person)
+}
+
+export function updatePerson(person) {
+  return http.put(personUrl(person.id), person);
 }
 
 export function addPersonHouse(person, houses) {

@@ -3,7 +3,7 @@ import Joi from "joi-browser";
 import withRouter from "../../services/withRouter";
 import ModalSelect from "../common/ModalSelect.jsx";
 import Form from "../common/form";
-import { getPerson, savePerson, addPersonHouse } from "../../services/peopleService";
+import { getPerson, createPerson, updatePerson, addPersonHouse } from "../../services/peopleService";
 import { getHouses } from "../../services/housesService";
 
 class PersonForm extends Form {
@@ -17,7 +17,7 @@ class PersonForm extends Form {
       governor_from: "",
       home: "",
       houses: "",
-      depends_on: "",
+      depends_on_id: "",
     },
     errors: {},
     showModal: false,
@@ -36,7 +36,7 @@ class PersonForm extends Form {
     home: Joi.any(),
     home_id: Joi.number().allow("").allow(null).label("Hogar"),
     houses: Joi.any(),
-    depends_on: Joi.any(),
+    depends_on_id: Joi.any(),
   };
 
   async populatePerson() {
@@ -65,26 +65,37 @@ class PersonForm extends Form {
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
   mapToViewModel(person) {
+    console.log("The person to map is", person);
     return {
       id: person.id,
       name: person.name,
       phone: person.phone,
       age: person.age,
       gender: person.gender,
-      depends_on_id: person.depends_on !== null ? person.depends_on.id : "",
-      home: person.home.address || "",
+      depends_on_id: person.depends_on !== null ? person.depends_on.id : null,
+      home: person.home !== null ? person.home.address : null,
       houses: person.houses,
     };
   }
 
-  doSubmit = () => {
-    savePerson(this.state.data);
+  doSubmit = async () => {
+    const {data: person} = this.state;
+    const {id} = this.props.params;
+    if (id === "new") {
+      await createPerson(person)
+    }
+    else {
+      await updatePerson(person)
+    }
+    // Necesitamos encontrar una mejor forma de regresar jajaja
+    alert("Success now return to previous page!")
   };
 
   handleModalToggle = () => {
     this.setState({ showModal: !this.state.showModal });
   };
-
+  
+  
   addHouse = async house => {
     const {houses} = this.state.data
     let houses_ids = houses.map(house => house.id)
@@ -94,11 +105,11 @@ class PersonForm extends Form {
   }
 
   render() {
-    const { name: nombre_persona, houses } = this.state.data;
+    const { name: nombre_persona, houses, depends_on_id } = this.state.data;
     return (
       <div>
         <h1>Datos de {nombre_persona}</h1>
-        <form onSubmit={this.handleSubmit}>r
+        <form onSubmit={this.handleSubmit}>
           {this.renderInput("id", "Cédula", "number")}
           {this.renderInput("name", "Nombre")}
           {this.renderInput("phone", "Teléfono")}
@@ -111,7 +122,6 @@ class PersonForm extends Form {
             "address",
             "viviendas"
           )}
-          {this.state.allHouses && <h5>Loaded</h5>}
           {this.state.allHouses && (
             <ModalSelect
               options = {this.state.allHouses}
@@ -121,7 +131,7 @@ class PersonForm extends Form {
               nameField = "address"
             />
           )}
-          {this.renderInput("depends_on_id", "Depende_de (cédula)")}
+          {depends_on_id && this.renderInput("depends_on_id", "Depende_de (cédula)")}
 
           {this.renderButton("Save")}
         </form>

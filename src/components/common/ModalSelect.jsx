@@ -15,7 +15,6 @@ class ModalSelect extends Component {
 
   async componentDidMount() {
     const nameField = this.props.nameField || "name";
-    console.log("The name field here is", nameField);
     this.setState({searchQuery: "", filteredOptions: [], selectedOption: "", baseOptions: this.props.options, nameField})
   }
 
