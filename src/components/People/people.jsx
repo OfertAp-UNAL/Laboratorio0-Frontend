@@ -22,8 +22,9 @@ class People extends Component {
   }
 
   handleDelete = async (person) => {
+    console.log("The person to delete is", person);
+    const people = this.state.people.filter(p => p.id !== person.id)
     await deletePerson(person.id)  // Remove in the database
-    const people = people.filter(p => p.id !== person.id)
     this.setState({people})
   };
 
