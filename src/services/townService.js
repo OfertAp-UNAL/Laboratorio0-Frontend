@@ -5,7 +5,7 @@ const apiUrl = config.apiUrl;
 const apiEndpoint = apiUrl + "/municipios/";
 
 function townUrl(id) {
-  return `${apiEndpoint}${id}`;
+  return `${apiEndpoint}${id}/`;
 }
 
 export function getTowns() {

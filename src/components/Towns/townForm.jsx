@@ -19,7 +19,7 @@ class TownForm extends Form {
 
   // Joi.any fields means there's no validation
   schema = {
-    id: Joi.any(),
+    id: Joi.number().required(),
     houses: Joi.any(),
     governor: Joi.any(),
     name: Joi.string().required().label("Nombre"),
