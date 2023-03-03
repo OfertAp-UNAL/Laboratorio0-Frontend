@@ -3,6 +3,8 @@ import Joi from "joi-browser";
 import Form from "../common/form";
 import { getTown, saveTown } from "../../services/townService";
 import withRouter from "../../services/withRouter";
+import ModalSelect from "../common/ModalSelect.jsx";
+import { getHouses } from "../../services/housesService";
 
 class TownForm extends Form {
   state = {
@@ -15,6 +17,8 @@ class TownForm extends Form {
       budget: "",
     },
     errors: {},
+    showModal: false,
+    allHouses: null
   };
 
   // Joi.any fields means there's no validation
@@ -43,6 +47,8 @@ class TownForm extends Form {
 
   async componentDidMount() {
     await this.populateTown();
+    const {data: allHouses} = await getHouses();
+    this.setState({allHouses});
   }
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
@@ -55,6 +61,24 @@ class TownForm extends Form {
       area: town.area,
       budget: town.budget,
     };
+  }
+
+  handleModalToggle = () => {
+    this.setState({ showModal: !this.state.showModal });
+  };
+
+
+  addHouse = async house => {
+    // First update the UI
+    const {houses} = this.state.data
+    this.setState({
+      data: {
+        ...this.state.data,
+        houses: [...houses, house],
+      },
+    });  // Re renders component
+
+    // Then make an API call (Need to complete this)
   }
 
   doSubmit = () => {
@@ -72,12 +96,21 @@ class TownForm extends Form {
           {this.renderInput("governor", "Gobernador")}
           {this.renderInput("area", "Área")}
           {this.renderInput("budget", "Presupuesto")}
-
           {this.renderURLReadOnlyList(
             "Viviendas",
             houses,
             "address",
             "viviendas"
+          )}
+          {this.state.allHouses && <h5>Loaded</h5>}
+          {this.state.allHouses && (
+            <ModalSelect
+              options = {this.state.allHouses}
+              showModal={this.state.showModal}
+              handleModalToggle={this.handleModalToggle}
+              onSelect = {this.addHouse}
+              nameField = "address"
+            />
           )}
           {this.renderButton("Save")}
         </form>

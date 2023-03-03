@@ -1,7 +1,7 @@
 import React from "react";
 import Joi from "joi-browser";
 import withRouter from "../../services/withRouter";
-import SelectHouseModal from "./ModalSelect";
+import ModalSelect from "../common/ModalSelect.jsx";
 import Form from "../common/form";
 import { getPerson, savePerson, addPersonHouse } from "../../services/peopleService";
 import { getHouses } from "../../services/housesService";
@@ -85,19 +85,6 @@ class PersonForm extends Form {
     this.setState({ showModal: !this.state.showModal });
   };
 
-  handleModalSelect = (house) => {
-    /*
-      Receive a house with only id and name fields!
-    */
-    this.setState({
-      data: {
-        ...this.state.data,
-        houses: [...this.state.data.houses, house],
-      },
-    });
-    this.handleModalToggle();
-  };
-
   addHouse = async house => {
     const {houses} = this.state.data
     let houses_ids = houses.map(house => house.id)
@@ -126,7 +113,7 @@ class PersonForm extends Form {
           )}
           {this.state.allHouses && <h5>Loaded</h5>}
           {this.state.allHouses && (
-            <SelectHouseModal
+            <ModalSelect
               options = {this.state.allHouses}
               showModal={this.state.showModal}
               handleModalToggle={this.handleModalToggle}
