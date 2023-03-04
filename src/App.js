@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import { Route, Redirect, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import People from "./components/people";
-import PersonForm from "./components/personForm";
-import Rentals from "./components/rentals";
-import NotFound from "./components/notFound";
+import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/navBar";
-import "./App.css";
+import People from "./components/People/people";
+import PersonForm from "./components/People/personForm";
+import Towns from "./components/Towns/towns";
+import TownForm from "./components/Towns/townForm";
+import Houses from "./components/Houses/houses";
+import HouseForm from "./components/Houses/houseForm";
+import NotFound from "./components/common/notFound";
 import "react-toastify/dist/ReactToastify.css";
-import Municipios from "./components/municipios";
+import "./App.css";
 
 class App extends Component {
   state = {};
@@ -19,15 +21,15 @@ class App extends Component {
         <ToastContainer />
         <NavBar user={this.state.user} />
         <main className="container">
-          <Switch>
-            <Route path="/habitantes/:id" component={PersonForm} />
-            <Route path="/habitantes" component={People} />
-            <Route path="/municipios" component={Municipios} />
-            <Route path="/rentals" component={Rentals} />
-            <Route path="/not-found" component={NotFound} />
-            <Redirect from="/" exact to="/habitantes" />
-            <Redirect to="/not-found" />
-          </Switch>
+          <Routes>
+            <Route path="/habitantes/:id" element={<PersonForm />} />
+            <Route path="/municipios/:id" element={<TownForm />} />
+            <Route path="/viviendas/:id" element={<HouseForm />} />
+            <Route path="/habitantes" element={<People />} />
+            <Route path="/municipios" element={<Towns />} />
+            <Route path="/viviendas" element={<Houses />} />
+            <Route path="/not-found" element={<NotFound />} />
+          </Routes>
         </main>
       </React.Fragment>
     );

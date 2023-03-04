@@ -88,13 +88,15 @@ class Form extends Component {
       display_parameter: string with the name of the parameter to search in the items list
       url_prefix: URL prefix to be used in the links
     */
+    console.log("The items 4 the list are", items);
+    if (!items) return null;
     return (
       <div>
         <h4>{list_title}</h4>
         <ul>
           {items.map((item) => (
             <li key={item["id"]}>
-              <Link to={`/${url_prefix}/${item["id"]}`}>
+              <Link to={`/${url_prefix}/${item["id"]}/`}>
                 {item[display_parameter]}
               </Link>
             </li>
