@@ -91,8 +91,7 @@ class PersonForm extends Form {
     } else {
       await updatePerson(person);
     }
-    // Necesitamos encontrar una mejor forma de regresar jajaja
-    alert("Success now return to previous page!");
+    this.props.navigate("/habitantes");
   };
 
   handleModalToggle = () => {

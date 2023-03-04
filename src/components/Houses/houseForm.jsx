@@ -4,6 +4,7 @@ import withRouter from "../../services/withRouter";
 import ModalSelect from "../common/ModalSelect.jsx";
 import Form from "../common/form";
 import { getPeople } from "../../services/peopleService";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   createHouse,
   updateHouse,
@@ -71,6 +72,7 @@ class HouseForm extends Form {
   }
 
   doSubmit = async () => {
+    // Update backend
     const { data: house } = this.state;
     const { id } = this.props.params;
     if (id === "new") {
@@ -78,8 +80,8 @@ class HouseForm extends Form {
     } else {
       await updateHouse(house);
     }
-    // Necesitamos encontrar una mejor forma de regresar jajaja
-    alert("Success now return to previous page!");
+    // Return to all houses page
+    this.props.navigate("/viviendas");
   };
 
   handleModalToggle = () => {
