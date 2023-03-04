@@ -5,7 +5,7 @@ import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import SearchBox from "../searchBox";
 import HousesTable from "./housesTable";
-import { getHouses, getHouse, deleteHouse } from "../../services/housesService";
+import { getHouses, deleteHouse } from "../../services/housesService";
 
 class House extends Component {
   state = {
@@ -50,8 +50,9 @@ class House extends Component {
 
     let filtered = allHabitants;
     if (searchQuery)
+
       filtered = allHabitants.filter((p) =>
-        p.id.toString().startsWith(searchQuery.toLowerCase())
+        p.address.toString().toLowerCase().startsWith(searchQuery.toLowerCase())
       );
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);

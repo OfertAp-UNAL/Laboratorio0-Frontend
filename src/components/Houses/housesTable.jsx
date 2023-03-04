@@ -5,6 +5,14 @@ import Table from "../common/table";
 class housesTable extends Component {
   columns = [
     {
+      key : "town",
+      label: "Municipio",
+      content: (house) => {
+        if( house.town )  return house.town.name;
+        else return "Sin municipio";
+      }
+    },
+    {
       path: "address",
       label: "Direccion",
       content: (house) => (
@@ -28,6 +36,7 @@ class housesTable extends Component {
 
   render() {
     const { houses, onSort, sortColumn } = this.props;
+    console.log( "housesTable: ", houses )
 
     return (
       <Table

@@ -106,7 +106,7 @@ class Form extends Component {
     );
   }
 
-  renderInput(name, label, type = "text") {
+  renderInput(name, label, type = "text", enabled = false) {
     const { data, errors } = this.state;
 
     return (
@@ -115,6 +115,7 @@ class Form extends Component {
         name={name}
         value={data[name]}
         label={label}
+        readOnly={enabled}
         onChange={this.handleChange}
         error={errors[name]}
       />

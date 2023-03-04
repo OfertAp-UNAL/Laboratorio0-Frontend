@@ -20,8 +20,8 @@ export function createHouse(house) {
   return http.post(apiEndpoint, house);
 }
 
-export function updateHouse(house) {
-  return http.patch(houseUrl(house.id), house);
+export function updateHouse(id, house) {
+  return http.patch(houseUrl(id), house);
 }
 
 export function deleteHouse(houseId) {
