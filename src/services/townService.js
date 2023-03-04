@@ -16,8 +16,12 @@ export function getTown(townId) {
   return http.get(townUrl(townId));
 }
 
-export function saveTown(town) {
+export function createTown(town) {
   return http.post(apiEndpoint, town);
+}
+
+export function updateTown(town) {
+  return http.put(townUrl(town.id), town);
 }
 
 export function deleteTown(townId) {
