@@ -81,7 +81,7 @@ class Form extends Component {
     );
   }
 
-  renderURLReadOnlyList(list_title, items, display_parameter, url_prefix) {
+  renderURLReadOnlyList(list_title, items, display_parameter, url_prefix, remove_function = null) {
     /*
       list_title: string to be displayed as title of the list
       items: array of objects to be displayed in the list
@@ -92,13 +92,23 @@ class Form extends Component {
     if (!items) return null;
     return (
       <div>
-        <h4>{list_title}</h4>
+        {list_title}
         <ul>
           {items.map((item) => (
             <li key={item["id"]}>
               <Link to={`/${url_prefix}/${item["id"]}/`}>
                 {item[display_parameter]}
               </Link>
+              <span>&nbsp;&nbsp;</span>
+              {remove_function && (
+                <button
+                  style={{ fontSize: 10 }}
+                  onClick={() => remove_function(item)}
+                  className="btn btn-danger btn-sm"
+                >
+                  X
+                </button>
+              )}
             </li>
           ))}
         </ul>

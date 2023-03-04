@@ -6,7 +6,7 @@ class ModalSelect extends Component {
     baseOptions: [],
     filteredOptions: [],
     searchQuery: "",
-    selectedOption: "",
+    selectedOption: null,
     nameField: "",
     buttonName : ""
   };
@@ -19,7 +19,7 @@ class ModalSelect extends Component {
       baseOptions: this.props.options,
       filteredOptions: [],
       searchQuery: "",
-      selectedOption: "",
+      selectedOption: null,
       nameField,
       buttonName
     });

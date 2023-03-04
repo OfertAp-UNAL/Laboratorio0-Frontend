@@ -36,7 +36,7 @@ class HouseForm extends Form {
     address: Joi.string().required().label("Dirección"),
     capacity: Joi.number().required().label("Capacidad"),
     levels: Joi.number().required().label("Niveles"),
-    townId : Joi.any(),
+    townId : Joi.number().required().label("Municipio"),
     townName: Joi.string(),
     residents: Joi.any(),
     owners: Joi.any(),
@@ -117,15 +117,27 @@ class HouseForm extends Form {
   addOwner = (person) => {
     // First update the UI
     const { owners } = this.state.data;
+    if( person ){
+      this.setState({
+        data: {
+          ...this.state.data,
+          owners: [...owners, person],
+        },
+      }); // Re renders component
+    }
+  };
+
+  removeOwner = (person) => {
+    // First update the UI
+    const { owners } = this.state.data;
     this.setState({
       data: {
         ...this.state.data,
-        owners: [...owners, person],
+        owners: owners.filter((owner) => owner.id !== person.id),
       },
     }); // Re renders component
-
   };
-
+  
   setTown = (town) => {
     this.setState({
       data: {
@@ -137,7 +149,7 @@ class HouseForm extends Form {
   };
 
   render() {
-    const { address, owners } = this.state.data;
+    const { address, owners, residents} = this.state.data;
 
     const { 
       showModalOwners, showModalTowns, allPeople, allTowns
@@ -147,29 +159,37 @@ class HouseForm extends Form {
       <div>
         <h1>Datos de {address}</h1>
         <form onSubmit={this.handleSubmit}>
-          {this.renderInput("address", "Dirección")}
-          {this.renderInput("capacity", "Capacidad", "number")}
-          {this.renderInput("levels", "Niveles", "number")}
-          {this.renderInput("townName", "Pueblo", "text", true)}
-          {allTowns && (
-            <ModalSelect
-              buttonName = "Seleccionar municipio"
-              options={allTowns}
+          {this.renderInput("address", "Address")}<br/>
+          {this.renderInput("capacity", "Capacity", "number")}<br/>
+          {this.renderInput("levels", "Levels", "number")}<br/>
+          {this.renderInput("townName", "Town", "text", true)}<br/>
+          {
+            allTowns && // Check when towns are loaded (since its an async call)
+            (<ModalSelect
+              buttonName = "Choose a town"
+              options={allTowns || []}
               showModal={showModalTowns}
               handleModalToggle={ () => this.handleModalToggle("towns")}
               onSelect={this.setTown}
-            />
-          )}
-          {this.renderURLReadOnlyList("Dueños", owners, "name", "habitantes")}
-          {allPeople && (
-            <ModalSelect
-              buttonName = "Seleccionar dueño(s)"
-              options={allPeople}
+            />)
+          }<br/>
+          {this.renderURLReadOnlyList(
+            "Owners", owners, "name", "habitantes", this.removeOwner
+          )}<br/>
+          {
+            allPeople && // Check when people are loaded (since its an async call)
+            (<ModalSelect
+              buttonName = "Choose an owner"
+              options={allPeople || []}
               showModal={showModalOwners}
               handleModalToggle={ () => this.handleModalToggle("owners")}
               onSelect={this.addOwner}
-            />
-          )}
+            />)
+          }<br/>
+          
+          {this.props.params.id !== "new" && this.renderURLReadOnlyList( // Display only when not adding
+            "Residents", residents, "name", "habitantes"
+          )}<br/>
           {this.renderButton("Save")}
         </form>
       </div>
