@@ -1,7 +1,7 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "../common/form";
-import { getTown, saveTown } from "../../services/townService";
+import { getTown, createTown, updateTown } from "../../services/townService";
 import withRouter from "../../services/withRouter";
 import ModalSelect from "../common/ModalSelect.jsx";
 import { getHouses } from "../../services/housesService";
@@ -18,7 +18,7 @@ class TownForm extends Form {
     },
     errors: {},
     showModal: false,
-    allHouses: null
+    allHouses: null,
   };
 
   // Joi.any fields means there's no validation
@@ -47,8 +47,8 @@ class TownForm extends Form {
 
   async componentDidMount() {
     await this.populateTown();
-    const {data: allHouses} = await getHouses();
-    this.setState({allHouses});
+    const { data: allHouses } = await getHouses();
+    this.setState({ allHouses });
   }
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
@@ -67,22 +67,28 @@ class TownForm extends Form {
     this.setState({ showModal: !this.state.showModal });
   };
 
-
-  addHouse = async house => {
+  addHouse = async (house) => {
     // First update the UI
-    const {houses} = this.state.data
+    const { houses } = this.state.data;
     this.setState({
       data: {
         ...this.state.data,
         houses: [...houses, house],
       },
-    });  // Re renders component
+    }); // Re renders component
 
     // Then make an API call (Need to complete this)
-  }
+  };
 
-  doSubmit = () => {
-    saveTown(this.state.data);
+  doSubmit = async () => {
+    const { data: town } = this.state;
+    const { id } = this.props.params;
+    if (id === "new") {
+      await createTown(town);
+    } else {
+      await updateTown(town);
+    }
+    this.props.navigate("/municipios");
   };
 
   render() {
@@ -91,7 +97,6 @@ class TownForm extends Form {
       <div>
         <h1>Datos de {town_name}</h1>
         <form onSubmit={this.handleSubmit}>
-          {this.renderInput("id", "Cédula", "number")}
           {this.renderInput("name", "Nombre")}
           {this.renderInput("governor", "Gobernador")}
           {this.renderInput("area", "Área")}
@@ -105,11 +110,11 @@ class TownForm extends Form {
           {this.state.allHouses && <h5>Loaded</h5>}
           {this.state.allHouses && (
             <ModalSelect
-              options = {this.state.allHouses}
+              options={this.state.allHouses}
               showModal={this.state.showModal}
               handleModalToggle={this.handleModalToggle}
-              onSelect = {this.addHouse}
-              nameField = "address"
+              onSelect={this.addHouse}
+              nameField="address"
             />
           )}
           {this.renderButton("Save")}
