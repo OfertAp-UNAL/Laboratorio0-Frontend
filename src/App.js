@@ -2,13 +2,15 @@ import React, { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/navBar";
-import PersonForm from "./components/People/personForm";
 import People from "./components/People/people";
+import PersonForm from "./components/People/personForm";
 import Towns from "./components/Towns/towns";
+import TownForm from "./components/Towns/townForm";
+import Houses from "./components/Houses/houses";
+import HouseForm from "./components/Houses/houseForm";
 import NotFound from "./components/common/notFound";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import TownForm from "./components/Towns/townForm";
 
 class App extends Component {
   state = {};
@@ -22,8 +24,10 @@ class App extends Component {
           <Routes>
             <Route path="/habitantes/:id" element={<PersonForm />} />
             <Route path="/municipios/:id" element={<TownForm />} />
+            <Route path="/viviendas/:id" element={<HouseForm />} />
             <Route path="/habitantes" element={<People />} />
             <Route path="/municipios" element={<Towns />} />
+            <Route path="/viviendas" element={<Houses />} />
             <Route path="/not-found" element={<NotFound />} />
           </Routes>
         </main>

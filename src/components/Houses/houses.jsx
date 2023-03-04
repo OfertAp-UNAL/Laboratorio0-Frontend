@@ -1,30 +1,30 @@
 import React, { Component } from "react";
+import _ from "lodash";
 import { Link } from "react-router-dom";
-import PeopleTable from "./peopleTable";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
-import _ from "lodash";
 import SearchBox from "../searchBox";
-import { getPeople } from "../../services/peopleService";
+import HousesTable from "./housesTable";
+import { getHouses, getHouse, deleteHouse } from "../../services/housesService";
 
-class People extends Component {
+class House extends Component {
   state = {
-    people: [],
+    houses: [],
     currentPage: 1,
     pageSize: 4,
     searchQuery: "",
-    sortColumn: { path: "name", order: "asc" },
+    sortColumn: { path: "?????????????", order: "asc" },
   };
 
   async componentDidMount() {
-    const { data: people } = await getPeople();
-    this.setState({ people });
+    const { data: houses } = await getHouses();
+    this.setState({ houses });
   }
 
-  handleDelete = (person) => {
-    const people = this.state.people.filter((p) => p.id !== person.id);
-    this.setState({ people });
-    // deleteHabitante(person.id);
+  handleDelete = async (house) => {
+    const houses = this.state.houses.filter((h) => h.id !== house.id);
+    this.setState({ houses });
+    await deleteHouse(house.id); // Remove in the database
   };
 
   handlePageChange = (page) => {
@@ -45,10 +45,8 @@ class People extends Component {
       currentPage,
       sortColumn,
       searchQuery,
-      people: allHabitants,
+      houses: allHabitants,
     } = this.state;
-
-    console.log(allHabitants);
 
     let filtered = allHabitants;
     if (searchQuery)
@@ -66,22 +64,22 @@ class People extends Component {
   render() {
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
-    const { totalCount, data: people } = this.getPagedData();
+    const { totalCount, data: houses } = this.getPagedData();
 
     return (
       <div className="row">
         <div className="col-3"></div>
         <div className="col">
           <Link
-            to="/habitantes/new"
+            to="/viviendas/new"
             className="btn btn-primary"
             style={{ marginBottom: 20 }}
           >
-            Agregar Habitante
+            Agregar Vivienda
           </Link>
           <SearchBox value={searchQuery} onChange={this.handleSearch} />
-          <PeopleTable
-            people={people}
+          <HousesTable
+            houses={houses}
             sortColumn={sortColumn}
             onDelete={this.handleDelete}
             onSort={this.handleSort}
@@ -98,4 +96,4 @@ class People extends Component {
   }
 }
 
-export default People;
+export default House;

@@ -27,6 +27,7 @@ class Towns extends Component {
   }
 
   handleDelete = async (town) => {
+    console.log("Trying to delete", town);
     const towns = this.state.towns.filter((t) => t.id !== town._id);
     this.setState({ towns });
 

@@ -3,7 +3,12 @@ import Joi from "joi-browser";
 import withRouter from "../../services/withRouter";
 import ModalSelect from "../common/ModalSelect.jsx";
 import Form from "../common/form";
-import { getPerson, createPerson, updatePerson, addPersonHouse } from "../../services/peopleService";
+import {
+  getPerson,
+  createPerson,
+  updatePerson,
+  addPersonHouse,
+} from "../../services/peopleService";
 import { getHouses } from "../../services/housesService";
 
 class PersonForm extends Form {
@@ -21,7 +26,7 @@ class PersonForm extends Form {
     },
     errors: {},
     showModal: false,
-    allHouses: null
+    allHouses: null,
   };
 
   // Front-end validation schema. governor_from is not validated because it is a read-only field.
@@ -59,8 +64,8 @@ class PersonForm extends Form {
 
   async componentDidMount() {
     await this.populatePerson();
-    const {data: allHouses} = await getHouses();
-    this.setState({allHouses});
+    const { data: allHouses } = await getHouses();
+    this.setState({ allHouses });
   }
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
@@ -79,30 +84,28 @@ class PersonForm extends Form {
   }
 
   doSubmit = async () => {
-    const {data: person} = this.state;
-    const {id} = this.props.params;
+    const { data: person } = this.state;
+    const { id } = this.props.params;
     if (id === "new") {
-      await createPerson(person)
-    }
-    else {
-      await updatePerson(person)
+      await createPerson(person);
+    } else {
+      await updatePerson(person);
     }
     // Necesitamos encontrar una mejor forma de regresar jajaja
-    alert("Success now return to previous page!")
+    alert("Success now return to previous page!");
   };
 
   handleModalToggle = () => {
     this.setState({ showModal: !this.state.showModal });
   };
-  
-  
-  addHouse = async house => {
-    const {houses} = this.state.data
-    let houses_ids = houses.map(house => house.id)
-    houses_ids.push(house.id)
-    await addPersonHouse(this.state.data, houses_ids)
+
+  addHouse = async (house) => {
+    const { houses } = this.state.data;
+    let houses_ids = houses.map((house) => house.id);
+    houses_ids.push(house.id);
+    await addPersonHouse(this.state.data, houses_ids);
     await this.populatePerson(); // Re render component after deletion
-  }
+  };
 
   render() {
     const { name: nombre_persona, houses, depends_on_id } = this.state.data;
@@ -124,14 +127,15 @@ class PersonForm extends Form {
           )}
           {this.state.allHouses && (
             <ModalSelect
-              options = {this.state.allHouses}
+              options={this.state.allHouses}
               showModal={this.state.showModal}
               handleModalToggle={this.handleModalToggle}
-              onSelect = {this.addHouse}
-              nameField = "address"
+              onSelect={this.addHouse}
+              nameField="address"
             />
           )}
-          {depends_on_id && this.renderInput("depends_on_id", "Depende_de (cédula)")}
+          {depends_on_id &&
+            this.renderInput("depends_on_id", "Depende_de (cédula)")}
 
           {this.renderButton("Save")}
         </form>

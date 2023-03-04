@@ -2,24 +2,22 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Table from "../common/table";
 
-class PeopleTable extends Component {
+class housesTable extends Component {
   columns = [
     {
-      path: "name",
-      label: "Nombre",
-      content: (habitante) => (
-        <Link to={`/habitantes/${habitante.id}`}>{habitante.name}</Link>
+      path: "address",
+      label: "Direccion",
+      content: (house) => (
+        <Link to={`/viviendas/${house.id}`}>{house.address}</Link>
       ),
     },
-    { path: "id", label: "Cédula" },
-    { path: "phone", label: "Teléfono" },
-    { path: "age", label: "Edad" },
-    { path: "gender", label: "Género" },
+    { path: "capacity", label: "Capacidad" },
+    { path: "levels", label: "Niveles" },
     {
       key: "delete",
-      content: (person) => (
+      content: (house) => (
         <button
-          onClick={() => this.props.onDelete(person)}
+          onClick={() => this.props.onDelete(house)}
           className="btn btn-danger btn-sm"
         >
           Eliminar
@@ -29,12 +27,12 @@ class PeopleTable extends Component {
   ];
 
   render() {
-    const { people, onSort, sortColumn } = this.props;
+    const { houses, onSort, sortColumn } = this.props;
 
     return (
       <Table
         columns={this.columns}
-        data={people}
+        data={houses}
         sortColumn={sortColumn}
         onSort={onSort}
       />
@@ -42,4 +40,4 @@ class PeopleTable extends Component {
   }
 }
 
-export default PeopleTable;
+export default housesTable;

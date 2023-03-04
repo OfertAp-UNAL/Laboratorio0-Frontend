@@ -1,52 +1,59 @@
 import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
 
-
-
 class ModalSelect extends Component {
   state = {
     baseOptions: [],
     filteredOptions: [],
     searchQuery: "",
     selectedOption: "",
-    nameField: ""
-  }
-
+    nameField: "",
+  };
 
   async componentDidMount() {
+    console.log("this.props", this.props);
     const nameField = this.props.nameField || "name";
-    this.setState({searchQuery: "", filteredOptions: [], selectedOption: "", baseOptions: this.props.options, nameField})
+    this.setState({
+      baseOptions: this.props.options,
+      filteredOptions: [],
+      searchQuery: "",
+      selectedOption: "",
+      nameField,
+    });
   }
 
   updateFilteredOptions = () => {
-    const {baseOptions, searchQuery, nameField} = this.state
-    const filteredOptions = baseOptions.filter( option => option[nameField].toLowerCase().includes(searchQuery.toLowerCase().trim()))
-    this.setState({filteredOptions})
-  }
+    const { baseOptions, searchQuery, nameField } = this.state;
+    const filteredOptions = baseOptions.filter((option) =>
+      option[nameField].toLowerCase().includes(searchQuery.toLowerCase().trim())
+    );
+    this.setState({ filteredOptions });
+  };
 
-  handleSuggestionClick = option => {
-    const {nameField} = this.props
-    const id = option.id
-    const name = option[nameField]
-    const selectedOption = {"id": id, [nameField]: name }
-    this.setState({searchQuery: name, selectedOption})
-    this.updateFilteredOptions()
-  }
+  handleSuggestionClick = (option) => {
+    const { nameField } = this.state;
+    const name = option[nameField];
+    const selectedOption = { id: option.id, [nameField]: name };
+    this.setState({ searchQuery: name, selectedOption });
+    this.updateFilteredOptions();
+  };
 
-  handleChange = event => {
-    const name = event.target.value || ""
-    this.setState({searchQuery: name})
-    this.updateFilteredOptions()
-  }
+  handleChange = (event) => {
+    const name = event.target.value || "";
+    this.setState({ searchQuery: name });
+    this.updateFilteredOptions();
+  };
 
   sendForm = () => {
-    this.props.onSelect(this.state.selectedOption)
-    this.props.handleModalToggle(this.state.selectedOption)
-  }
+    const { onSelect, handleModalToggle } = this.props;
+    const { selectedOption } = this.state;
+    onSelect(selectedOption);
+    handleModalToggle(selectedOption);
+  };
 
   render() {
-    const {searchQuery, filteredOptions, nameField} = this.state
-    return(
+    const { searchQuery, filteredOptions, nameField } = this.state;
+    return (
       <div>
         <Button onClick={this.props.handleModalToggle}>Add</Button>
         <Modal
@@ -54,11 +61,15 @@ class ModalSelect extends Component {
           onHide={this.props.handleModalToggle}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Modal Title</Modal.Title>
+            <Modal.Title>Select</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div>
-              <input type="text" value={searchQuery} onChange={this.handleChange} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={this.handleChange}
+              />
               <ul>
                 {filteredOptions.map((option) => (
                   <li
@@ -76,9 +87,8 @@ class ModalSelect extends Component {
           </Modal.Footer>
         </Modal>{" "}
       </div>
-    )
+    );
   }
-
 }
 
 export default ModalSelect;

@@ -22,9 +22,9 @@ class People extends Component {
   }
 
   handleDelete = async (person) => {
-    const people = this.state.people.filter(p => p.id !== person.id)
-    this.setState({people})
-    await deletePerson(person.id)  // Remove in the database
+    const people = this.state.people.filter((p) => p.id !== person.id);
+    this.setState({ people });
+    await deletePerson(person.id); // Remove in the database
   };
 
   handlePageChange = (page) => {
@@ -47,7 +47,6 @@ class People extends Component {
       searchQuery,
       people: allHabitants,
     } = this.state;
-
 
     let filtered = allHabitants;
     if (searchQuery)

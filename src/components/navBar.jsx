@@ -26,7 +26,7 @@ const NavBar = ({ user }) => {
           <NavLink className="nav-item nav-link" to="/municipios">
             Municipios
           </NavLink>
-          <NavLink className="nav-item nav-link" to="/customers">
+          <NavLink className="nav-item nav-link" to="/viviendas">
             Viviendas
           </NavLink>
           <NavLink className="nav-item nav-link" to="/rentals">
