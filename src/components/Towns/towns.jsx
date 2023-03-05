@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import _ from "lodash";
-import SearchBox from "../searchBox";
+import SearchBox from "../common/searchBox";
 import TownsTable from "./townsTable";
 import {
   getTown,

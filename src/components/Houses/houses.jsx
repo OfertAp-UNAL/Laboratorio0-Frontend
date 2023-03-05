@@ -3,7 +3,7 @@ import _ from "lodash";
 import { Link } from "react-router-dom";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
-import SearchBox from "../searchBox";
+import SearchBox from "../common/searchBox";
 import HousesTable from "./housesTable";
 import { getHouses, deleteHouse } from "../../services/housesService";
 
@@ -50,7 +50,6 @@ class House extends Component {
 
     let filtered = allHabitants;
     if (searchQuery)
-
       filtered = allHabitants.filter((p) =>
         p.address.toString().toLowerCase().startsWith(searchQuery.toLowerCase())
       );
