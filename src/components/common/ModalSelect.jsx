@@ -8,11 +8,10 @@ class ModalSelect extends Component {
     searchQuery: "",
     selectedOption: null,
     nameField: "",
-    buttonName : ""
+    buttonName: "",
   };
 
   async componentDidMount() {
-    console.log("this.props", this.props);
     const nameField = this.props.nameField || "name";
     const buttonName = this.props.buttonName || "Add";
     this.setState({
@@ -21,7 +20,7 @@ class ModalSelect extends Component {
       searchQuery: "",
       selectedOption: null,
       nameField,
-      buttonName
+      buttonName,
     });
   }
 
@@ -58,7 +57,9 @@ class ModalSelect extends Component {
     const { searchQuery, filteredOptions, nameField } = this.state;
     return (
       <div>
-        <Button onClick={this.props.handleModalToggle}>{this.state.buttonName}</Button>
+        <Button onClick={this.props.handleModalToggle}>
+          {this.state.buttonName}
+        </Button>
         <Modal
           show={this.props.showModal}
           onHide={this.props.handleModalToggle}

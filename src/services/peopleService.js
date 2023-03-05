@@ -18,19 +18,18 @@ export function getPerson(personId) {
   return http.get(personUrl(personId));
 }
 
-
 export function createPerson(person) {
-  return http.post(apiEndpoint, person)
+  return http.post(apiEndpoint, person);
 }
 
 export function updatePerson(person) {
+  console.log("The person to update is", person);
   return http.put(personUrl(person.id), person);
 }
 
 export function addPersonHouse(person, houses) {
-  const body = {"houses": houses}
-  console.log("The body here is", body);
-  return http.patch(personUrl(person.id), body)
+  const body = { houses: houses };
+  return http.patch(personUrl(person.id), body);
 }
 
 export function deletePerson(personId) {

@@ -28,7 +28,7 @@ class HouseForm extends Form {
     showModalOwners: false,
     showModalTowns: false,
     allPeople: null,
-    allTowns : null
+    allTowns: null,
   };
 
   schema = {
@@ -36,7 +36,7 @@ class HouseForm extends Form {
     address: Joi.string().required().label("Dirección"),
     capacity: Joi.number().required().label("Capacidad"),
     levels: Joi.number().required().label("Niveles"),
-    townId : Joi.number().required().label("Municipio"),
+    townId: Joi.number().required().label("Municipio"),
     townName: Joi.string(),
     residents: Joi.any(),
     owners: Joi.any(),
@@ -88,11 +88,9 @@ class HouseForm extends Form {
       capacity: house.capacity,
       levels: house.levels,
       town: house.townId,
-      owners: house.owners.map(
-        (owner) => owner.id
-      ),
+      owners: house.owners.map((owner) => owner.id),
     };
-  }
+  };
 
   doSubmit = async () => {
     // Update backend
@@ -107,17 +105,19 @@ class HouseForm extends Form {
     this.props.navigate("/viviendas");
   };
 
-  handleModalToggle = ( type ) => {
-    if( type === "owners")
+  handleModalToggle = (type) => {
+    if (type === "owners") {
       this.setState({ showModalOwners: !this.state.showModalOwners });
-    else if( type === "towns")
+    } else if (type === "towns") {
+      console.log("Must open towns!");
       this.setState({ showModalTowns: !this.state.showModalTowns });
+    }
   };
 
   addOwner = (person) => {
     // First update the UI
     const { owners } = this.state.data;
-    if( person ){
+    if (person) {
       this.setState({
         data: {
           ...this.state.data,
@@ -137,7 +137,7 @@ class HouseForm extends Form {
       },
     }); // Re renders component
   };
-  
+
   setTown = (town) => {
     this.setState({
       data: {
@@ -149,47 +149,60 @@ class HouseForm extends Form {
   };
 
   render() {
-    const { address, owners, residents} = this.state.data;
+    const { address, owners, residents } = this.state.data;
 
-    const { 
-      showModalOwners, showModalTowns, allPeople, allTowns
-    } = this.state;
+    const { showModalOwners, showModalTowns, allPeople, allTowns } = this.state;
 
     return (
       <div>
         <h1>Datos de {address}</h1>
         <form onSubmit={this.handleSubmit}>
-          {this.renderInput("address", "Address")}<br/>
-          {this.renderInput("capacity", "Capacity", "number")}<br/>
-          {this.renderInput("levels", "Levels", "number")}<br/>
-          {this.renderInput("townName", "Town", "text", true)}<br/>
-          {
-            allTowns && // Check when towns are loaded (since its an async call)
-            (<ModalSelect
-              buttonName = "Choose a town"
+          {this.renderInput("address", "Address")}
+          <br />
+          {this.renderInput("capacity", "Capacity", "number")}
+          <br />
+          {this.renderInput("levels", "Levels", "number")}
+          <br />
+          {this.renderInput("townName", "Town", "text", true)}
+          <br />
+          {allTowns && ( // Check when towns are loaded (since its an async call)
+            <ModalSelect
+              buttonName="Choose a town"
               options={allTowns || []}
               showModal={showModalTowns}
-              handleModalToggle={ () => this.handleModalToggle("towns")}
+              handleModalToggle={() => this.handleModalToggle("towns")}
               onSelect={this.setTown}
-            />)
-          }<br/>
+            />
+          )}
+          <br />
           {this.renderURLReadOnlyList(
-            "Owners", owners, "name", "habitantes", this.removeOwner
-          )}<br/>
-          {
-            allPeople && // Check when people are loaded (since its an async call)
-            (<ModalSelect
-              buttonName = "Choose an owner"
+            "Owners",
+            owners,
+            "name",
+            "habitantes",
+            this.removeOwner
+          )}
+          <br />
+          {allPeople && ( // Check when people are loaded (since its an async call)
+            <ModalSelect
+              buttonName="Choose an owner"
               options={allPeople || []}
               showModal={showModalOwners}
-              handleModalToggle={ () => this.handleModalToggle("owners")}
+              handleModalToggle={() => this.handleModalToggle("owners")}
               onSelect={this.addOwner}
-            />)
-          }<br/>
-          
-          {this.props.params.id !== "new" && this.renderURLReadOnlyList( // Display only when not adding
-            "Residents", residents, "name", "habitantes"
-          )}<br/>
+            />
+          )}
+          <br />
+
+          {this.props.params.id !== "new" &&
+            this.renderURLReadOnlyList(
+              // Display only when not adding
+              "Residents",
+              residents,
+              "name",
+              "habitantes"
+            )}
+          <br />
           {this.renderButton("Save")}
         </form>
       </div>

@@ -25,7 +25,8 @@ class PersonForm extends Form {
       depends_on_id: "",
     },
     errors: {},
-    showModal: false,
+    showModalHome: false,
+    showModalHouses: false,
     allHouses: null,
   };
 
@@ -39,7 +40,6 @@ class PersonForm extends Form {
     gender: Joi.string().required().label("Sexo"),
     governor_from: Joi.any(),
     home: Joi.any(),
-    home_id: Joi.number().allow("").allow(null).label("Hogar"),
     houses: Joi.any(),
     depends_on_id: Joi.any(),
   };
@@ -78,14 +78,22 @@ class PersonForm extends Form {
       age: person.age,
       gender: person.gender,
       depends_on_id: person.depends_on !== null ? person.depends_on.id : null,
-      home: person.home !== null ? person.home.address : null,
+      home: person.home,
       houses: person.houses,
     };
   }
 
   doSubmit = async () => {
-    const { data: person } = this.state;
     const { id } = this.props.params;
+    const { id: homeId } = this.state.data.home;
+    let housesIds = this.state.data.houses.map((house) => house.id);
+
+    const person = {
+      ...this.state.data,
+      home: homeId,
+      houses: housesIds,
+    };
+
     if (id === "new") {
       await createPerson(person);
     } else {
@@ -94,8 +102,11 @@ class PersonForm extends Form {
     this.props.navigate("/habitantes");
   };
 
-  handleModalToggle = () => {
-    this.setState({ showModal: !this.state.showModal });
+  handleModalToggle = (type) => {
+    if (type === "home")
+      this.setState({ showModalHome: !this.state.showModalHome });
+    else if (type === "houses")
+      this.setState({ showModalHouses: !this.state.showModalHouses });
   };
 
   addHouse = async (house) => {
@@ -106,29 +117,63 @@ class PersonForm extends Form {
     await this.populatePerson(); // Re render component after deletion
   };
 
+  changeHome = (home) => {
+    this.setState({
+      data: {
+        ...this.state.data,
+        home: home,
+      },
+    });
+  };
+
   render() {
-    const { name: nombre_persona, houses, depends_on_id } = this.state.data;
+    const {
+      name: nombre_persona,
+      houses,
+      depends_on_id,
+      home,
+    } = this.state.data;
+    const personId = this.props.params.id;
+    const { allHouses, showModalHome, showModalHouses } = this.state;
     return (
       <div>
         <h1>Datos de {nombre_persona}</h1>
+        {personId === "new" && <h1>Nueva persona</h1>}
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("id", "Cédula", "number")}
           {this.renderInput("name", "Nombre")}
           {this.renderInput("phone", "Teléfono")}
           {this.renderInput("age", "Edad", "number")}
           {this.renderInput("gender", "Sexo")}
-          {this.renderInput("home", "Dirección")}
+          {this.renderReadOnlyLinkComponent(
+            "Hogar",
+            home.address,
+            `/viviendas/${home.id}`
+          )}
+
+          {allHouses && ( // Check when people are loaded (since its an async call)
+            <ModalSelect
+              buttonName="Selecciona una dirección"
+              options={allHouses || []}
+              showModal={showModalHome}
+              handleModalToggle={() => this.handleModalToggle("home")}
+              onSelect={this.changeHome}
+              nameField="address"
+            />
+          )}
+          <br />
           {this.renderURLReadOnlyList(
             "Viviendas",
             houses,
             "address",
             "viviendas"
           )}
-          {this.state.allHouses && (
+          {allHouses && (
             <ModalSelect
-              options={this.state.allHouses}
-              showModal={this.state.showModal}
-              handleModalToggle={this.handleModalToggle}
+              buttonName="Añade una casa"
+              options={allHouses || []}
+              showModal={showModalHouses}
+              handleModalToggle={() => this.handleModalToggle("houses")}
               onSelect={this.addHouse}
               nameField="address"
             />
