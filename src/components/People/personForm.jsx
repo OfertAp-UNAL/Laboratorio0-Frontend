@@ -115,10 +115,13 @@ class PersonForm extends Form {
   addHouse = async (house) => {
     if (house) {
       const { houses } = this.state.data;
-      let houses_ids = houses.map((house) => house.id);
-      houses_ids.push(house.id);
-      await addPersonHouse(this.state.data, houses_ids);
-      await this.populatePerson(); // Re render component after deletion
+
+      this.setState({
+        data: {
+          ...this.state.data,
+          houses: [...houses, house],
+        },
+      });
     }
   };
 
