@@ -4,7 +4,7 @@ import PeopleTable from "./peopleTable";
 import Pagination from "../common/pagination";
 import { paginate } from "../../utils/paginate";
 import _ from "lodash";
-import SearchBox from "../searchBox";
+import SearchBox from "../common/searchBox";
 import { getPeople, deletePerson } from "../../services/peopleService";
 
 class People extends Component {
