@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ToastContainer } from "react-toastify";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import NavBar from "./components/navBar";
 import People from "./components/People/people";
 import PersonForm from "./components/People/personForm";
@@ -29,6 +29,7 @@ class App extends Component {
             <Route path="/municipios" element={<Towns />} />
             <Route path="/viviendas" element={<Houses />} />
             <Route path="/not-found" element={<NotFound />} />
+            <Route path="/" element={<Navigate to="/habitantes" replace />} />
           </Routes>
         </main>
       </React.Fragment>

@@ -47,7 +47,7 @@ class TownForm extends Form {
       });
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
-        this.props.history.replace("/not-found");
+        this.props.navigate("/not-found");
     }
   }
 
