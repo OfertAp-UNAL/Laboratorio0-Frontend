@@ -15,21 +15,21 @@ class TownForm extends Form {
       name: "",
       area: 0,
       budget: 0,
-      governorId: null,
-      governorName: null,
+      governorId: 0,
+      governorName: "",
     },
     errors: {},
     showModalGovernor: false,
     showModalHouses: false,
-    allHouses: null,
-    allPersons: null,
+    allHouses: [],
+    allPersons: [],
   };
 
   // Joi.any fields means there's no validation
   schema = {
     id: Joi.number().required(),
-    governorId: Joi.number().required().label("Gobernador"),
-    governorName: Joi.string(),
+    governorId: Joi.any(),
+    governorName: Joi.any(),
     name: Joi.string().required().label("Nombre"),
     area: Joi.number().required().label("Área"),
     budget: Joi.number().required().label("Presupuesto"),
@@ -64,8 +64,8 @@ class TownForm extends Form {
     return {
       id: town.id,
       houses: town.houses || "",
-      governorId: town.governor ? town.governor.id : null,
-      governorName: town.governor ? town.governor.name : null,
+      governorId: town.governor ? town.governor.id : 0,
+      governorName: town.governor ? town.governor.name : "",
       name: town.name,
       area: town.area,
       budget: town.budget,
@@ -117,12 +117,14 @@ class TownForm extends Form {
       area: town.area,
       budget: town.budget,
       governor: town.governorId,
+      houses: town.houses.map((house) => house.id),
     };
   };
 
   doSubmit = async () => {
     const town = this.genServiceData();
-    console.log("town", town);
+    console.log(town);
+
     const { id } = this.props.params;
     if (id === "new") {
       await createTown(town);
@@ -142,7 +144,7 @@ class TownForm extends Form {
           <br />
           {this.renderInput("governorName", "Gobernador", "text", true)}
           <br />
-          {this.state.allPersons && (
+          {this.state.allPersons.length > 0 && (
             <ModalSelect
               options={this.state.allPersons}
               showModal={this.state.showModalGovernor}
@@ -163,7 +165,7 @@ class TownForm extends Form {
             "address",
             "viviendas"
           )}
-          {this.state.allHouses && (
+          {this.state.allHouses.length > 0 && (
             <ModalSelect
               options={this.state.allHouses}
               showModal={this.state.showModalHouses}
