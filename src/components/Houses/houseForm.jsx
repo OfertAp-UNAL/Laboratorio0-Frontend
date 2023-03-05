@@ -20,15 +20,15 @@ class HouseForm extends Form {
       capacity: 0,
       levels: 0,
       townId: 0,
-      townName: null,
-      residents: null,
+      townName: "",
+      residents: [],
       owners: [],
     },
     errors: {},
     showModalOwners: false,
     showModalTowns: false,
-    allPeople: null,
-    allTowns: null,
+    allPeople: [],
+    allTowns: [],
   };
 
   schema = {
@@ -66,14 +66,13 @@ class HouseForm extends Form {
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
   mapToViewModel(house) {
-    console.log("The house to map is", house);
     return {
       id: house.id,
       address: house.address,
       capacity: house.capacity,
       levels: house.levels,
-      townName: house.town !== null ? house.town.name : null,
-      townId: house.town !== null ? house.town.id : null,
+      townName: house.town !== null ? house.town.name : "",
+      townId: house.town !== null ? house.town.id : 0,
       residents: house.residents,
       owners: house.owners ? house.owners : [],
     };
@@ -157,17 +156,17 @@ class HouseForm extends Form {
       <div>
         <h1>Datos de {address}</h1>
         <form onSubmit={this.handleSubmit}>
-          {this.renderInput("address", "Address")}
+          {this.renderInput("address", "Dirección")}
           <br />
-          {this.renderInput("capacity", "Capacity", "number")}
+          {this.renderInput("capacity", "Capacidad", "number")}
           <br />
-          {this.renderInput("levels", "Levels", "number")}
+          {this.renderInput("levels", "Niveles", "number")}
           <br />
-          {this.renderInput("townName", "Town", "text", true)}
+          {this.renderInput("townName", "Municipio", "text", true)}
           <br />
-          {allTowns && ( // Check when towns are loaded (since its an async call)
+          {allTowns.length > 0 && ( // Check when towns are loaded (since its an async call)
             <ModalSelect
-              buttonName="Choose a town"
+              buttonName="Selecciona un municipio"
               options={allTowns || []}
               showModal={showModalTowns}
               handleModalToggle={() => this.handleModalToggle("towns")}
@@ -176,16 +175,16 @@ class HouseForm extends Form {
           )}
           <br />
           {this.renderURLReadOnlyList(
-            "Owners",
+            "Propietarios",
             owners,
             "name",
             "habitantes",
             this.removeOwner
           )}
           <br />
-          {allPeople && ( // Check when people are loaded (since its an async call)
+          {allPeople.length > 0 && ( // Check when people are loaded (since its an async call)
             <ModalSelect
-              buttonName="Choose an owner"
+              buttonName="Selecciona un propietario"
               options={allPeople || []}
               showModal={showModalOwners}
               handleModalToggle={() => this.handleModalToggle("owners")}
@@ -197,7 +196,7 @@ class HouseForm extends Form {
           {this.props.params.id !== "new" &&
             this.renderURLReadOnlyList(
               // Display only when not adding
-              "Residents",
+              "Residentes",
               residents,
               "name",
               "habitantes"

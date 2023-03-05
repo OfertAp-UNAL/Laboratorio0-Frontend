@@ -20,7 +20,7 @@ class App extends Component {
       <React.Fragment>
         <ToastContainer />
         <NavBar user={this.state.user} />
-        <main className="container">
+        <main className="container" style = {{ backgroundImage: `url(/Background.jpg)`}}>
           <Routes>
             <Route path="/habitantes/:id" element={<PersonForm />} />
             <Route path="/municipios/:id" element={<TownForm />} />

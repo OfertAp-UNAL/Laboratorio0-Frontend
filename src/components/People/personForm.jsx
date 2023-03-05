@@ -14,20 +14,20 @@ import { getHouses } from "../../services/housesService";
 class PersonForm extends Form {
   state = {
     data: {
-      id: "",
+      id: 0,
       name: "",
       phone: "",
-      age: "",
+      age: 0,
       gender: "",
-      governor_from: "",
-      home: "",
-      houses: "",
+      governed_town: 0,
+      home: {},
+      houses: [],
       depends_on_id: "",
     },
     errors: {},
     showModalHome: false,
     showModalHouses: false,
-    allHouses: null,
+    allHouses: [],
   };
 
   // Front-end validation schema. governor_from is not validated because it is a read-only field.
@@ -37,11 +37,12 @@ class PersonForm extends Form {
     name: Joi.string().required().label("Nombre"),
     phone: Joi.string().required().label("Teléfono"),
     age: Joi.number().required().min(0).max(100).label("Edad"),
-    gender: Joi.string().required().label("Sexo"),
-    governor_from: Joi.any(),
+    gender: Joi.string().required().valid("M", "F", "O").label("Sexo"),
+    governed_town: Joi.any(),
     home: Joi.any(),
     houses: Joi.any(),
     depends_on_id: Joi.any(),
+    dependences: Joi.any(),
   };
 
   async populatePerson() {
@@ -70,28 +71,30 @@ class PersonForm extends Form {
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
   mapToViewModel(person) {
-    console.log("The person to map is", person);
     return {
       id: person.id,
       name: person.name,
       phone: person.phone,
       age: person.age,
       gender: person.gender,
-      depends_on_id: person.depends_on !== null ? person.depends_on.id : null,
-      home: person.home,
-      houses: person.houses,
+      depends_on_id: person.depends_on ? person.depends_on.id : "",
+      home: person.home ? person.home : {},
+      houses: person.houses ? person.houses : [],
+      dependences: person.dependences ? person.dependences : [],
     };
   }
 
   doSubmit = async () => {
     const { id } = this.props.params;
     const { id: homeId } = this.state.data.home;
-    let housesIds = this.state.data.houses.map((house) => house.id);
+    const depends_on_id = this.state.data.depends_on_id;
+    const housesIds = this.state.data.houses.map((house) => house.id);
 
     const person = {
       ...this.state.data,
       home: homeId,
       houses: housesIds,
+      depends_on: depends_on_id,
     };
 
     if (id === "new") {
@@ -110,29 +113,28 @@ class PersonForm extends Form {
   };
 
   addHouse = async (house) => {
-    const { houses } = this.state.data;
-    let houses_ids = houses.map((house) => house.id);
-    houses_ids.push(house.id);
-    await addPersonHouse(this.state.data, houses_ids);
-    await this.populatePerson(); // Re render component after deletion
+    if (house) {
+      const { houses } = this.state.data;
+      let houses_ids = houses.map((house) => house.id);
+      houses_ids.push(house.id);
+      await addPersonHouse(this.state.data, houses_ids);
+      await this.populatePerson(); // Re render component after deletion
+    }
   };
 
   changeHome = (home) => {
-    this.setState({
-      data: {
-        ...this.state.data,
-        home: home,
-      },
-    });
+    if (home) {
+      this.setState({
+        data: {
+          ...this.state.data,
+          home: home,
+        },
+      });
+    }
   };
 
   render() {
-    const {
-      name: nombre_persona,
-      houses,
-      depends_on_id,
-      home,
-    } = this.state.data;
+    const { name: nombre_persona, houses, home, dependences } = this.state.data;
     const personId = this.props.params.id;
     const { allHouses, showModalHome, showModalHouses } = this.state;
     return (
@@ -141,17 +143,23 @@ class PersonForm extends Form {
         {personId === "new" && <h1>Nueva persona</h1>}
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("id", "Cédula", "number")}
+          <br />
           {this.renderInput("name", "Nombre")}
+          <br />
           {this.renderInput("phone", "Teléfono")}
+          <br />
           {this.renderInput("age", "Edad", "number")}
+          <br />
           {this.renderInput("gender", "Sexo")}
+          <br />
           {this.renderReadOnlyLinkComponent(
             "Hogar",
             home.address,
             `/viviendas/${home.id}`
           )}
+          <br />
 
-          {allHouses && ( // Check when people are loaded (since its an async call)
+          {allHouses.length > 0 && ( // Check when people are loaded (since its an async call)
             <ModalSelect
               buttonName="Selecciona una dirección"
               options={allHouses || []}
@@ -168,9 +176,10 @@ class PersonForm extends Form {
             "address",
             "viviendas"
           )}
-          {allHouses && (
+          <br />
+          {allHouses.length > 0 && (
             <ModalSelect
-              buttonName="Añade una casa"
+              buttonName="Añade una propiedad"
               options={allHouses || []}
               showModal={showModalHouses}
               handleModalToggle={() => this.handleModalToggle("houses")}
@@ -178,10 +187,23 @@ class PersonForm extends Form {
               nameField="address"
             />
           )}
-          {depends_on_id &&
-            this.renderInput("depends_on_id", "Depende_de (cédula)")}
-
+          <br />
+          {this.renderInput("depends_on_id", "Depende_de (cédula)")}
+          <br />
+          {this.renderURLReadOnlyList(
+            "Dependientes",
+            dependences,
+            "name",
+            "habitantes"
+          )}
           {this.renderButton("Save")}
+          {this.errors &&
+            this.validate() &&
+            this.errors.map((error) => (
+              <div key={error} className="alert alert-danger">
+                {error}
+              </div>
+            ))}
         </form>
       </div>
     );

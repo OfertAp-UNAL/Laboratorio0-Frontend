@@ -75,7 +75,7 @@ class Form extends Component {
   renderReadOnlyLinkComponent(title, text, link) {
     return (
       <div>
-        <h3>{title}</h3>
+        {title} <br />
         <Link to={link}>{text}</Link>
       </div>
     );
@@ -94,7 +94,6 @@ class Form extends Component {
       display_parameter: string with the name of the parameter to search in the items list
       url_prefix: URL prefix to be used in the links
     */
-    console.log("The items 4 the list are", items);
     if (!items) return null;
     return (
       <div>

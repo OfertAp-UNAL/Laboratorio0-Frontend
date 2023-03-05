@@ -23,7 +23,6 @@ export function createPerson(person) {
 }
 
 export function updatePerson(person) {
-  console.log("The person to update is", person);
   return http.put(personUrl(person.id), person);
 }
 

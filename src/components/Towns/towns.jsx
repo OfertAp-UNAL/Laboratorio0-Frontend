@@ -5,12 +5,7 @@ import { paginate } from "../../utils/paginate";
 import _ from "lodash";
 import SearchBox from "../common/searchBox";
 import TownsTable from "./townsTable";
-import {
-  getTown,
-  getTowns,
-  saveTown,
-  deleteTown,
-} from "../../services/townService";
+import { getTowns, deleteTown } from "../../services/townService";
 
 class Towns extends Component {
   state = {
@@ -27,7 +22,6 @@ class Towns extends Component {
   }
 
   handleDelete = async (town) => {
-    console.log("Trying to delete", town);
     const towns = this.state.towns.filter((t) => t.id !== town._id);
     this.setState({ towns });
 

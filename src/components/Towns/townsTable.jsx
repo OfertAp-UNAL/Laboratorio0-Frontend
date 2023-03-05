@@ -26,7 +26,6 @@ class TownsTable extends Component {
 
   render() {
     const { towns, onSort, sortColumn } = this.props;
-    console.log("TownsTable - Rendered", this.props);
 
     return (
       <Table

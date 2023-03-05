@@ -41,7 +41,6 @@ class TownForm extends Form {
       const townId = this.props.params.id;
       if (townId === "new") return;
       const { data: town } = await getTown(townId);
-      console.log(town);
       this.setState({
         data: this.mapToViewModel(town),
       });
@@ -94,7 +93,6 @@ class TownForm extends Form {
   };
 
   setGovernor = async (person) => {
-    console.log(person);
     // First update the UI
     if (person) {
       this.setState({
@@ -104,8 +102,6 @@ class TownForm extends Form {
           governorName: person.name,
         },
       }); // Re renders component
-      console.log(this.state.data.governorId);
-      console.log(this.state.data.governorName);
     }
   };
 
@@ -123,7 +119,6 @@ class TownForm extends Form {
 
   doSubmit = async () => {
     const town = this.genServiceData();
-    console.log(town);
 
     const { id } = this.props.params;
     if (id === "new") {
