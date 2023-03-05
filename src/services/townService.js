@@ -20,8 +20,8 @@ export function createTown(town) {
   return http.post(apiEndpoint, town);
 }
 
-export function updateTown(town) {
-  return http.put(townUrl(town.id), town);
+export function updateTown(id, town) {
+  return http.put(townUrl(id), town);
 }
 
 export function deleteTown(townId) {
