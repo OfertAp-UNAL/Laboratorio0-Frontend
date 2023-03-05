@@ -72,16 +72,22 @@ class Form extends Component {
     );
   }
 
-  renderReadOnlyLinkComponent(text_before, text_link, link) {
-    if (!text_link) return null;
+  renderReadOnlyLinkComponent(title, text, link) {
     return (
-      <h3>
-        {text_before} <Link to={link}>{text_link}</Link>
-      </h3>
+      <div>
+        <h3>{title}</h3>
+        <Link to={link}>{text}</Link>
+      </div>
     );
   }
 
-  renderURLReadOnlyList(list_title, items, display_parameter, url_prefix, remove_function = null) {
+  renderURLReadOnlyList(
+    list_title,
+    items,
+    display_parameter,
+    url_prefix,
+    remove_function = null
+  ) {
     /*
       list_title: string to be displayed as title of the list
       items: array of objects to be displayed in the list
