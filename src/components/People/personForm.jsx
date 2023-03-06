@@ -3,11 +3,11 @@ import Joi from "joi-browser";
 import withRouter from "../../services/withRouter";
 import ModalSelect from "../common/ModalSelect.jsx";
 import Form from "../common/form";
+import { toast } from "react-toastify";
 import {
   getPerson,
   createPerson,
   updatePerson,
-  addPersonHouse,
 } from "../../services/peopleService";
 import { getHouses } from "../../services/housesService";
 
@@ -65,8 +65,13 @@ class PersonForm extends Form {
 
   async componentDidMount() {
     await this.populatePerson();
-    const { data: allHouses } = await getHouses();
-    this.setState({ allHouses });
+
+    try {
+      const { data: allHouses } = await getHouses();
+      this.setState({ allHouses });
+    } catch (e) {
+      toast.error("No se pudo cargar la lista de casas");
+    }
   }
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
@@ -97,12 +102,16 @@ class PersonForm extends Form {
       depends_on: depends_on_id,
     };
 
-    if (id === "new") {
-      await createPerson(person);
-    } else {
-      await updatePerson(person);
+    try {
+      if (id === "new") {
+        await createPerson(person);
+      } else {
+        await updatePerson(person);
+      }
+      this.props.navigate("/habitantes");
+    } catch (e) {
+      toast("No se pudo guardar la persona");
     }
-    this.props.navigate("/habitantes");
   };
 
   handleModalToggle = (type) => {

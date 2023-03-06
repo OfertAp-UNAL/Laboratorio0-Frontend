@@ -14,10 +14,12 @@ axios.interceptors.response.use(null, (error) => {
   return Promise.reject(error);
 });
 
-export default {
+const http = {
   get: axios.get,
   post: axios.post,
   put: axios.put,
   delete: axios.delete,
   patch: axios.patch,
 };
+
+export default http;

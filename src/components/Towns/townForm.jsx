@@ -6,6 +6,7 @@ import withRouter from "../../services/withRouter";
 import ModalSelect from "../common/ModalSelect.jsx";
 import { getHouses } from "../../services/housesService";
 import { getPeople } from "../../services/peopleService";
+import { toast } from "react-toastify";
 
 class TownForm extends Form {
   state = {
@@ -37,25 +38,41 @@ class TownForm extends Form {
   };
 
   async populateTown() {
+    const townId = this.props.params.id;
+    if (townId === "new") return;
+
     try {
-      const townId = this.props.params.id;
-      if (townId === "new") return;
       const { data: town } = await getTown(townId);
       this.setState({
         data: this.mapToViewModel(town),
       });
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
-        this.props.navigate("/not-found");
+        toast.error("No se pudo cargar la ciudad");
+      this.props.navigate("/not-found");
     }
   }
 
   async componentDidMount() {
     await this.populateTown();
-    const { data: allHouses } = await getHouses();
-    const { data: allPersons } = await getPeople();
-    this.setState({ allHouses });
-    this.setState({ allPersons });
+
+    try {
+      const { data: allHouses } = await getHouses();
+      this.setState({
+        allHouses: allHouses,
+      });
+    } catch (e) {
+      toast.error("No se pudo cargar casas");
+    }
+
+    try {
+      const { data: allPersons } = await getPeople();
+      this.setState({
+        allPersons: allPersons,
+      });
+    } catch (e) {
+      toast.error("No se pudo cargar personas");
+    }
   }
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
@@ -119,14 +136,18 @@ class TownForm extends Form {
 
   doSubmit = async () => {
     const town = this.genServiceData();
-
     const { id } = this.props.params;
-    if (id === "new") {
-      await createTown(town);
-    } else {
-      await updateTown(id, town);
+    try {
+      if (id === "new") {
+        await createTown(town);
+      } else {
+        await updateTown(id, town);
+      }
+      this.props.navigate("/municipios");
+    } catch (e) {
+      console.log(e);
+      toast.error("Error al guardar la ciudad");
     }
-    this.props.navigate("/municipios");
   };
 
   render() {

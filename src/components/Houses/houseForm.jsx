@@ -5,7 +5,8 @@ import ModalSelect from "../common/ModalSelect.jsx";
 import Form from "../common/form";
 import { getPeople } from "../../services/peopleService";
 import { getTowns } from "../../services/townService";
-//import { Navigate, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import {
   createHouse,
   updateHouse,
@@ -58,10 +59,20 @@ class HouseForm extends Form {
 
   async componentDidMount() {
     await this.populateHouse();
-    const { data: allPeople } = await getPeople();
-    const { data: allTowns } = await getTowns();
-    this.setState({ allPeople });
-    this.setState({ allTowns });
+
+    try {
+      const { data: allPeople } = await getPeople();
+      this.setState({ allPeople });
+    } catch (ex) {
+      toast.error("No se pudo cargar la lista de personas");
+    }
+
+    try {
+      const { data: allTowns } = await getTowns();
+      this.setState({ allTowns });
+    } catch (ex) {
+      toast.error("No se pudo cargar la lista de municipios");
+    }
   }
 
   // Remember home_address and depends_on_id may be null, that's why we use the validation with '?'
@@ -95,13 +106,18 @@ class HouseForm extends Form {
     // Update backend
     const { id } = this.props.params;
     const house_data = this.genServiceData();
-    if (id === "new") {
-      await createHouse(house_data);
-    } else {
-      await updateHouse(id, house_data);
+
+    try {
+      if (id === "new") {
+        await createHouse(house_data);
+      } else {
+        await updateHouse(id, house_data);
+      }
+      // Return to all houses page
+      this.props.navigate("/viviendas");
+    } catch (ex) {
+      toast.error("No se pudo guardar la vivienda");
     }
-    // Return to all houses page
-    this.props.navigate("/viviendas");
   };
 
   handleModalToggle = (type) => {
